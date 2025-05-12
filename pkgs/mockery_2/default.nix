@@ -3,7 +3,7 @@
   fetchFromGitHub,
   ...
 }:
-pkgs.buildGoModule rec {
+pkgs.buildGo123Module rec {
   pname = "mockery";
   version = "2.53.3";
   src = fetchFromGitHub {

@@ -14,6 +14,5 @@
   modules = import ./modules; # NixOS modules
   overlays = import ./overlays; # nixpkgs overlays
 
-  example-package = pkgs.callPackage ./pkgs/example-package { };
-  mockery = pkgs.callPackage ./pkgs/mockery { };
+  mockery_2 = pkgs.callPackage ./pkgs/mockery_2 { };
 }
