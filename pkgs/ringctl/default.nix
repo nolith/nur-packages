@@ -40,6 +40,7 @@ in
 
     meta = {
       sourceProvenance = [lib.sourceTypes.binaryNativeCode];
+      license = lib.licenses.mit;
 
       platforms = [
         "aarch64-darwin"
