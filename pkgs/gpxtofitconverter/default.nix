@@ -49,6 +49,10 @@ in
 
       runHook postInstall
     '';
+
+    # don't build in CI, depends on unfree Garmin SDK
+    preferLocalBuild = true;
+
     meta = {
       license = lib.licenses.gpl3Only;
       homepage = "https://github.com/googol42/GpxToFitConverter";
