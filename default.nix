@@ -8,24 +8,34 @@
 {pkgs ? import <nixpkgs> {}}: let
   pkgsFolder = ./pkgs;
   entries = builtins.readDir pkgsFolder;
-in
   # generate a dynamic attrset based on the contents of the pkgs folder
-  builtins.listToAttrs
-  # make sure we only import packages that are a folder and where an default.nix file exists
-  (builtins.filter (x: x != null)
-    (map (
-        name:
-          if entries.${name} == "directory" && builtins.pathExists (pkgsFolder + "/${name}/default.nix")
-          then {
-            inherit name;
-            value = pkgs.callPackage (pkgsFolder + "/${name}") {};
-          }
-          else null
-      )
-      (builtins.attrNames entries)))
-  // {
+  nolithPkgs =
+    builtins.listToAttrs
+    # make sure we only import packages that are a folder and where an default.nix file exists
+    (builtins.filter (x: x != null)
+      (map (
+          name:
+            if entries.${name} == "directory" && builtins.pathExists (pkgsFolder + "/${name}/default.nix")
+            then {
+              inherit name;
+              value = pkgs.callPackage (pkgsFolder + "/${name}") {};
+            }
+            else null
+        )
+        (builtins.attrNames entries)));
+in
+  {
     # The `lib`, `modules`, and `overlays` names are special
     lib = import ./lib {inherit pkgs;}; # functions
     modules = import ./modules; # NixOS modules
-    overlays = import ./overlays; # nixpkgs overlays
+    overlays = import ./overlays {inherit nolithPkgs;}; # nixpkgs overlays
+    python3Packages = let
+      callPackage = pkgs.python3.pkgs.callPackage;
+    in
+      pkgs.recurseIntoAttrs {
+        srtmpy = callPackage ./pkgs/python-packages/srtmpy {};
+        python-srtm = callPackage ./pkgs/python-packages/python-srtm {};
+      };
+    gpxtofitconverter = pkgs.python3.pkgs.callPackage ./pkgs/python-packages/gpxtofitconverter {};
   }
+  // nolithPkgs
