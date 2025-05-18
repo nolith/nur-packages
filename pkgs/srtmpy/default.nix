@@ -1,9 +1,10 @@
 {
   lib,
-  buildPythonPackage,
+  python3,
+  buildPythonPackage ? python3.pkgs.buildPythonPackage,
   fetchFromGitHub,
   # dependencies
-  requests,
+  requests ? python3.pkgs.requests,
 }:
 buildPythonPackage rec {
   pname = "srtm.py";
